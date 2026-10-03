@@ -90,7 +90,7 @@ Jede Eingabe hat Standardwert und Wertebereich (offen, werden mit Quelle und Dat
 - Validierung gegen das PVGIS-Webtool steht aus
 
 ## 7. Offene Punkte
-- Vergleich mit dem PVGIS-Webtool (Jahresertrag, Monatswerte, Systemverluste, Winkelkonvention prüfen)
+- Vergleich mit dem PVGIS-Webtool (Jahresertrag, Monatswerte, Systemverluste). Azimut-Konvention im Tool: 180 = Süd, wie in pvlib. Erster Vergleich (Nordanlage, 30 Grad): PVGIS 2579 kWh.
 - Zeitstempel in PVGIS: Momentanwert oder Stundenmittel (Effekt auf den Sonnenstand)
 - Standardwerte für Preise, Aufschläge, Anlagenkosten, Systemverluste, Wechselrichter, Batterie (mit Quelle und Datum)
 - Preisniveau: Mittelwert oder Faktor

@@ -64,3 +64,11 @@ def test_invalid_input_rejected():
         RoofSurface(kwp=-1, tilt=30)
     with pytest.raises(ValueError):
         RoofSurface(kwp=4, tilt=120)
+
+
+@pytest.mark.parametrize("model", ["isotropic", "haydavies", "perez"])
+def test_sky_models_give_valid_results(model):
+    south = simulate_pv(_weather(), LAT, LON, PVSystem([RoofSurface(4, 30, 180)]), sky_model=model)
+    north = simulate_pv(_weather(), LAT, LON, PVSystem([RoofSurface(4, 30, 0)]), sky_model=model)
+    assert south.isna().sum() == 0
+    assert south.sum() > north.sum() > 0

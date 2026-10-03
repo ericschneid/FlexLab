@@ -61,14 +61,21 @@ class PVSystem:
 
 
 def simulate_pv(weather: pd.DataFrame, latitude: float, longitude: float,
-                system: PVSystem) -> pd.Series:
+                system: PVSystem, sky_model: str = "isotropic") -> pd.Series:
     """Return hourly AC power in kW (equals kWh per hour) for the given weather data.
 
     weather needs the columns ghi, dni, dhi, temp_air, wind_speed and a
     timezone-aware hourly index.
+    sky_model: diffuse sky model, 'isotropic', 'haydavies' or 'perez'.
     """
     location = Location(latitude, longitude)
     solar = location.get_solarposition(weather.index)
+
+    extra = {}
+    if sky_model in ("haydavies", "perez"):
+        extra["dni_extra"] = irradiance.get_extra_radiation(weather.index)
+    if sky_model == "perez":
+        extra["airmass"] = location.get_airmass(solar_position=solar)["airmass_relative"]
 
     dc_total = pd.Series(0.0, index=weather.index)
     for surface in system.surfaces:
@@ -80,7 +87,8 @@ def simulate_pv(weather: pd.DataFrame, latitude: float, longitude: float,
             dni=weather["dni"],
             ghi=weather["ghi"],
             dhi=weather["dhi"],
-            model="isotropic",
+            model=sky_model,
+            **extra,
         )
         cell_temp = temperature.sapm_cell(
             poa["poa_global"], weather["temp_air"], weather["wind_speed"], **CELL_TEMP_PARAMS
